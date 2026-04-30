@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FactureController;
+use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::resources(['clients' => ClientController::class]);
+Route::resources(['factures' => FactureController::class]);
+Route::resources(['produits' => ProduitController::class]);
 
 require __DIR__.'/auth.php';
 
