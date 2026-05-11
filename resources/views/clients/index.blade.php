@@ -6,7 +6,7 @@
         <div class="p-6 bg-white border-b border-gray-200">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-semibold text-gray-800">Liste des Clients</h2>
-                <a href="{{ route('clients.create') }}" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 border-2 border-blue-800">
+                <a href="{{ route('clients.create') }}" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 border-2 border-blue-800">
                     Ajouter un Client
                 </a>
             </div>
