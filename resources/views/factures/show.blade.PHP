@@ -1,76 +1,81 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détail Facture #{{ $facture->id }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        @media print { .no-print { display: none; } }
-    </style>
-</head>
-<body class="bg-light py-5">
-    <div class="container">
-        <div class="card shadow border-0 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-5">
-                <div>
-                    <h2 class="text-primary fw-bold">FACTURE #{{ $facture->id }}</h2>
-                    <p class="text-muted">Date d'émission : {{ $facture->date }}</p>
-                </div>
-                <div class="text-end">
-                    <h5 class="fw-bold">Client :</h5>
-                    <p class="mb-0">{{ $facture->client->nom }} {{ $facture->client->prenom }}</p>
-                    <p>Tél : {{ $facture->client->tel }}</p>
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+            <div class="mb-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-600">FACTURE #{{ $facture->id }}</h2>
+                        <p class="text-gray-600 mt-1">Date d'émission : {{ $facture->date }}</p>
+                    </div>
+                    <div class="text-right">
+                        <h3 class="text-lg font-bold text-purple-600">Client :</h3>
+                        <p class="text-gray-900 font-medium">{{ $facture->client->nom }} {{ $facture->client->prenom }}</p>
+                        <p class="text-gray-700">Tél : {{ $facture->client->tel }}</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-dark">
+            <div class="overflow-x-auto mb-6">
+                <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th>Désignation</th>
-                            <th class="text-center">Prix Unitaire</th>
-                            <th class="text-center">Quantité</th>
-                            <th class="text-end">Total HT</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Désignation</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Prix Unitaire</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total HT</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($facture->produits as $produit)
-                        <tr>
-                            <td>{{ $produit->libelle }}</td>
-                            <td class="text-center">{{ number_format($produit->pivot->prix_unitaire, 2) }} DH</td>
-                            <td class="text-center">{{ $produit->pivot->qte_facturee }}</td>
-                            <td class="text-end">{{ number_format($produit->pivot->prix_unitaire * $produit->pivot->qte_facturee, 2) }} DH</td>
-                        </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $produit->libelle }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 text-center">{{ number_format($produit->pivot->prix_unitaire, 2) }} DH</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 text-center">{{ $produit->pivot->qte_facturee }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900 text-right">{{ number_format($produit->pivot->prix_unitaire * $produit->pivot->qte_facturee, 2) }} DH</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
 
-            <div class="row justify-content-end mt-4">
-                <div class="col-md-4">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Total Hors Taxes (HT)</span>
-                            <strong>{{ number_format($facture->getTotalHT(), 2) }} DH</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>TVA (20%)</span>
-                            <strong>{{ number_format($facture->getMontantTVA(), 2) }} DH</strong>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between bg-primary text-white">
-                            <span class="h5 mb-0">Total TTC</span>
-                            <strong class="h5 mb-0">{{ number_format($facture->getTotalTTC(), 2) }} DH</strong>
-                        </li>
-                    </ul>
+            <div class="flex justify-end mb-6">
+                <div class="w-full md:w-1/3">
+                    <div class="space-y-2">
+                        <div class="flex justify-between py-2 border-b">
+                            <span class="text-gray-700">Total Hors Taxes (HT)</span>
+                            <span class="font-semibold text-gray-900">{{ number_format($facture->getTotalHT(), 2) }} DH</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b">
+                            <span class="text-gray-700">TVA (20%)</span>
+                            <span class="font-semibold text-gray-900">{{ number_format($facture->getMontantTVA(), 2) }} DH</span>
+                        </div>
+                        <div class="flex justify-between py-3 bg-blue-600 text-white rounded px-4">
+                            <span class="text-lg font-semibold">Total TTC</span>
+                            <span class="text-lg font-bold">{{ number_format($facture->getTotalTTC(), 2) }} DH</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-5 d-flex gap-2 no-print">
-                <a href="{{ route('factures.index') }}" class="btn btn-secondary">Retour à la liste</a>
-                <button onclick="window.print()" class="btn btn-success">Imprimer la facture (PDF)</button>
+            <div class="flex gap-3 no-print">
+                <a href="{{ route('factures.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Retour à la liste
+                </a>
+                <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Imprimer la facture
+                </button>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+@media print { 
+    .no-print { display: none !important; }
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+</style>
+@endsection

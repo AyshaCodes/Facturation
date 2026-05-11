@@ -1,73 +1,73 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Liste des factures</title>
-</head>
+@section('content')
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-xl border-l-4 border-purple-500 sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Liste des Factures</h2>
+                <a href="{{ route('factures.create') }}" class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105">
+                    Nouvelle Facture
+                </a>
+            </div>
 
-<body class="bg-light">
+            @if(session('success'))
+                <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Liste des factures</h1>
-            {{-- Correction du texte du bouton --}}
-            <a href="{{ route('factures.create') }}" class="btn btn-success btn-sm">Nouvelle Facture</a>
-        </div>
-
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#ID</th>
-                            <th>Date</th>
-                            <th>Client</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($factures as $facture)
+            @if($factures->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <td>{{ $facture->id }}</td>
-                                <td class="fw-bold">{{ $facture->date }}</td>
-                                <td>
-                                    {{-- Affichage du nom et prénom du client lié [cite: 35] --}}
-                                    <span class="badge bg-info text-dark">
-                                        {{ $facture->client->nom ?? 'N/A' }} {{ $facture->client->prenom ?? '' }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        {{-- Lien vers le détail de la facture [cite: 45] --}}
-                                        <a href="{{ route('factures.show', $facture->id) }}" class="btn btn-warning btn-sm">Consulter</a>
-
-                                        {{-- Formulaire de suppression --}}
-                                        <form action="{{ route('factures.destroy', $facture->id) }}" method="POST" onsubmit="return confirm('Supprimer cette facture ?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                        </form>
-                                    </div>
-                                </td>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($factures as $facture)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $facture->id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $facture->date }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-purple-100 text-purple-800 border border-purple-200">
+                                            {{ $facture->client->nom ?? 'Client' }} {{ $facture->client->prenom ?? '' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('factures.show', $facture->id) }}" class="text-indigo-600 hover:text-indigo-900">Consulter</a>
+                                            <form action="{{ route('factures.destroy', $facture->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Supprimer cette facture?')">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <p class="text-gray-500">Aucune facture trouvée.</p>
+                    <a href="{{ route('factures.create') }}" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Créer la première facture
+                    </a>
+                </div>
+            @endif
+
+            <div class="mt-6">
+                <a href="{{ route('dashboard') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Retour au tableau de bord
+                </a>
             </div>
         </div>
-
-        <div class="mt-3">
-            <a href="{{ url('/') }}" class="btn btn-secondary btn-sm">Retour à l'accueil</a>
-        </div>
     </div>
-
-</body>
-</html>
+</div>
+@endsection

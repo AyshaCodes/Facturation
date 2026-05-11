@@ -1,80 +1,68 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Nouveau Client</title>
-</head>
-
-<body class="bg-light">
-
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Ajouter un nouveau client</h4>
-                    </div>
-                    <div class="card-body">
-                        {{-- Affichage des erreurs de validation globales si nécessaire --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        <form action="{{ route('clients.store') }}" method="POST">
-                            @csrf
-
-                            <div class="mb-3">
-                                <label for="nom" class="form-label">Nom</label>
-                                <input type="text" name="nom" id="nom"
-                                    class="form-control @error('nom') is-invalid @enderror"
-                                    value="{{ old('nom') }}" required>
-                                @error('nom')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="prenom" class="form-label">Prénom</label>
-                                <input type="text" name="prenom" id="prenom"
-                                    class="form-control @error('prenom') is-invalid @enderror"
-                                    value="{{ old('prenom') }}" required>
-                                @error('prenom')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="tel" class="form-label">Téléphone</label>
-                                <input type="text" name="tel" id="tel"
-                                    class="form-control @error('tel') is-invalid @enderror"
-                                    value="{{ old('tel') }}" required>
-                                @error('tel')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('clients.index') }}" class="btn btn-secondary">Annuler</a>
-                                <button type="submit" class="btn btn-success">Enregistrer le client</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+@section('content')
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Ajouter un nouveau client</h2>
+                <p class="mt-1 text-sm text-gray-600">Remplissez les informations ci-dessous pour créer un nouveau client.</p>
             </div>
+
+            {{-- Affichage des erreurs de validation globales si nécessaire --}}
+            @if ($errors->any())
+                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('clients.store') }}" method="POST" class="space-y-6">
+                @csrf
+
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <input type="text" name="nom" id="nom"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('nom') border-red-500 @enderror"
+                        value="{{ old('nom') }}" required>
+                    @error('nom')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                    <input type="text" name="prenom" id="prenom"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('prenom') border-red-500 @enderror"
+                        value="{{ old('prenom') }}" required>
+                    @error('prenom')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="tel" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                    <input type="text" name="tel" id="tel"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('tel') border-red-500 @enderror"
+                        value="{{ old('tel') }}" required>
+                    @error('tel')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex justify-between">
+                    <a href="{{ route('clients.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                        Annuler
+                    </a>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Enregistrer le client
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+</div>
+@endsection

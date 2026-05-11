@@ -1,82 +1,78 @@
-<!DOCTYPE html>
-<html lang="fr">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Catalogue Produits</title>
-</head>
-
-<body class="bg-light">
-
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Catalogue des produits</h1>
-            <a href="{{ route('produits.create') }}" class="btn btn-primary btn-sm">Nouveau Produit</a>
-        </div>
-
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+@section('content')
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-xl border-l-4 border-green-500 sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Catalogue des produits</h2>
+                <a href="{{ route('produits.create') }}" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105">
+                    Nouveau Produit
+                </a>
             </div>
-        @endif
 
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover mb-0">
-                    <thead class="table-dark">
+            @if(session('success'))
+                <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th>#ID</th>
-                            <th>Libellé</th>
-                            <th>Prix Unitaire</th>
-                            <th>Stock (Qté)</th>
-                            <th class="text-center">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Libellé</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix Unitaire</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($produits as $produit)
                             <tr>
-                                <td>{{ $produit->id }}</td>
-                                <td class="fw-bold">{{ $produit->libelle }}</td>
-                                <td>{{ number_format($produit->prix, 2) }} DH</td>
-                                <td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produit->id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $produit->libelle }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($produit->prix, 2) }} DH</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     @if($produit->qte <= 5)
-                                        <span class="badge bg-danger">Alerte : {{ $produit->qte }}</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white animate-pulse shadow-md">
+                                            ⚠️ Alerte: {{ $produit->qte }}
+                                        </span>
                                     @else
-                                        <span class="badge bg-success">{{ $produit->qte }}</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white shadow-md">
+                                            ✅ {{ $produit->qte }}
+                                        </span>
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ route('produits.edit', $produit->id) }}" class="btn btn-info btn-sm text-white">Modifier</a>
-
-                                        <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" onsubmit="return confirm('Supprimer ce produit du catalogue ?')">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('produits.edit', $produit->id) }}" class="text-indigo-600 hover:text-indigo-900">Modifier</a>
+                                        <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Supprimer ce produit du catalogue?')">Supprimer</button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">Aucun produit disponible dans le catalogue.</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    Aucun produit disponible dans le catalogue.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <div class="mt-4">
-            <a href="{{ route('factures.index') }}" class="btn btn-outline-secondary btn-sm">Voir les Factures</a>
+            <div class="mt-6">
+                <a href="{{ route('factures.index') }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Voir les Factures
+                </a>
+            </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+</div>
+@endsection
