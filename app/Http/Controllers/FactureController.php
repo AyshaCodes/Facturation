@@ -29,12 +29,13 @@ class FactureController extends Controller
         $request->validate([
             "client_id" => "required|exists:clients,id",
             "date"      => "required|date",
-            "produits"  => "required|array|min:1", // Au moins un produit [cite: 63]
+            "produits"  => "required|array|min:1",
             "produits.*.id"  => "required|exists:produits,id",
             "produits.*.qte" => "required|integer|min:1",
         ]);
-
+//pour eviter de créer une facture fantome
         try {
+            // : On commence à écrire la facture, mais de manière "brouillon"
             DB::beginTransaction();
 
             // 1. Création de l'entête de la facture
@@ -43,20 +44,21 @@ class FactureController extends Controller
                 "date"      => $request->date,
             ]);
 
-            // 2. Ajout des produits dans la table pivot [cite: 11, 22, 38]
             foreach ($request->produits as $item) {
                 $produit = Produit::find($item['id']);
 
                 $facture->produits()->attach($produit->id, [
                     'qte_facturee'  => $item['qte'],
-                    'prix_unitaire' => $produit->prix // On fige le prix actuel [cite: 22]
+                    'prix_unitaire' => $produit->prix
                 ]);
             }
-
+//  Si tout le code à l'intérieur du try s'exécute parfaitement sans aucune erreur, MySQL valide définitivement l'écriture globale (la facture ET tous ses produits sont enregistrés ensemble)
             DB::commit();
             return redirect()->route("factures.show", $facture->id);
 
         } catch (\Exception $e) {
+            //  Le rollback annule absolument tout ce qui a été tenté depuis le début du bloc en cas d'erreur
+
             DB::rollback();
             return back()->withErrors("Erreur lors de la création : " . $e->getMessage());
         }
@@ -64,14 +66,13 @@ class FactureController extends Controller
 
     public function show(Facture $facture)
     {
-        // Charge les produits et leurs données pivot pour l'affichage final [cite: 45]
         $facture->load('produits', 'client');
         return view("factures.show", compact('facture'));
     }
 
     public function destroy(Facture $facture)
     {
-        $facture->delete(); // Supprime aussi les lignes pivot grâce au cascade [cite: 31]
+        $facture->delete();
         return redirect()->route("factures.index");
     }
 }

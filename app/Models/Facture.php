@@ -28,7 +28,6 @@ class Facture extends Model
             ->withTimestamps();
     }
 
-    // --- Méthodes de calcul demandées [cite: 19, 22] ---
 
     /**
      * Calcule le Total Hors Taxes (HT).

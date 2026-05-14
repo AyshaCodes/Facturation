@@ -5,8 +5,8 @@
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
             <div class="mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800">Ajouter un nouveau client</h2>
-                <p class="mt-1 text-sm text-gray-600">Remplissez les informations ci-dessous pour créer un nouveau client.</p>
+<h2 class="text-3xl font-bold text-blue-600 tracking-tight">Ajouter un nouveau client</>
+                    <p class="mt-1 text-sm text-gray-600">Remplissez les informations ci-dessous pour créer un nouveau client.</p>
             </div>
 
             {{-- Affichage des erreurs de validation globales si nécessaire --}}
